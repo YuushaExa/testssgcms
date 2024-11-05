@@ -175,12 +175,12 @@
         });
         
 document.querySelector('.add-file').addEventListener('click', () => {
-    const fileName = prompt('Enter new file name (e.g., /post1.html):');
+    const fileName = prompt('Enter new file name (e.g., about.html):');
     if (fileName && !files[fileName]) {
         // Initialize the new file in the files object with a message and a link to index
         files[fileName] = `<article class="post">
             <h2>New Page Added</h2>
-            <p>Add content or press <a href="/">to return to index</a>.</p>
+            <p>Add content or press <a href="/index.html">to return to index</a>.</p>
         </article>`;
         
         const newFileItem = document.createElement('div');
