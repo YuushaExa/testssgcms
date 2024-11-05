@@ -177,13 +177,43 @@
   document.querySelector('.add-file').addEventListener('click', () => {
     const fileName = prompt('Enter new file name (e.g., /post1.html):');
     if (fileName && !files[fileName]) {
-        // Initialize the new file in the files object
+        // Initialize the new file in the files object with a message and a link to index
         files[fileName] = `<article class="post">
-            <h2><a href="${fileName}">Blog Post Title 1</a></h2>
-            <p class="post-meta">Posted on January 1, 2023 by Author</p>
-            <p class="post-excerpt">This is a brief excerpt of the blog post. It gives a summary of what the post is about...</p>
-            <a class="read-more" href="${fileName}">Read More</a>
+            <h2>New Page Added</h2>
+            <p>Add content or press <a href="/">to return to index</a>.</p>
         </article>`;
+        
+        const newFileItem = document.createElement('div');
+        newFileItem.classList.add('file-item');
+        newFileItem.dataset.file = fileName;
+        newFileItem.textContent = fileName;
+        newFileItem.addEventListener('click', (e) => {
+            document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
+            newFileItem.classList.add('active');
+            activeFile = newFileItem.dataset.file;
+            editor.setValue(files[activeFile]);
+            editor.setOption('mode', activeFile.endsWith('.md') ? 'markdown' : 'htmlmixed');
+        });
+        document.querySelector('#file-tree').insertBefore(newFileItem, document.querySelector('.add-file'));
+    }
+});
+
+        
+        const newFileItem = document.createElement('div');
+        newFileItem.classList.add('file-item');
+        newFileItem.dataset.file = fileName;
+        newFileItem.textContent = fileName;
+        newFileItem.addEventListener('click', (e) => {
+            document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
+            newFileItem.classList.add('active');
+            activeFile = newFileItem.dataset.file;
+            editor.setValue(files[activeFile]);
+            editor.setOption('mode', activeFile.endsWith('.md') ? 'markdown' : 'htmlmixed');
+        });
+        document.querySelector('#file-tree').insertBefore(newFileItem, document.querySelector('.add-file'));
+    }
+});
+
         
         const newFileItem = document.createElement('div');
         newFileItem.classList.add('file-item');
