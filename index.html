@@ -174,7 +174,7 @@
             });
         });
         
-  document.querySelector('.add-file').addEventListener('click', () => {
+document.querySelector('.add-file').addEventListener('click', () => {
     const fileName = prompt('Enter new file name (e.g., /post1.html):');
     if (fileName && !files[fileName]) {
         // Initialize the new file in the files object with a message and a link to index
@@ -182,7 +182,7 @@
             <h2>New Page Added</h2>
             <p>Add content or press <a href="/">to return to index</a>.</p>
         </article>`;
-         
+        
         const newFileItem = document.createElement('div');
         newFileItem.classList.add('file-item');
         newFileItem.dataset.file = fileName;
