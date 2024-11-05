@@ -67,4 +67,26 @@
     </div>
   </div>
 </body>
+    <script>
+   function loadTab1Content() {
+            fetch('files.json') // Replace with the correct path to your JSON file
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const tab1Content = document.getElementById('tab1Content');
+                    tab1Content.innerHTML = '<h2>Content for Tab 1</h2>'; // Reset content
+                    data.files.forEach(file => {
+                        tab1Content.innerHTML += `<p><strong>${file.name}:</strong> ${file.description}</p>`;
+                    });
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+
+    </script>
 </html>
