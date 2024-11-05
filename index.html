@@ -144,26 +144,17 @@
             iframeDoc.close();
             interceptLinks(iframeDoc);
         }
-function interceptLinks(doc) {
-    doc.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', (event) => {
-            event.preventDefault();
-            let href = link.getAttribute('href');
-            // Remove leading slash for checking in the files object
-            if (href.startsWith('/')) {
-                href = href.substring(1);
-            }
-            if (files[href]) {
-                updateIframe(href);
-            } else {
-                console.warn(`File ${href} not found in the sandbox.`);
-                // Optionally, prompt to create the file or show an error
-            }
-        });
-    });
-}
-
-
+        function interceptLinks(doc) {
+            doc.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const href = link.getAttribute('href');
+                    if (files[href]) {
+                        updateIframe(href);
+                    }
+                });
+            });
+        }
         updateIframe();
         document.querySelectorAll('.file-item').forEach(item => {
             item.addEventListener('click', (e) => {
@@ -174,25 +165,24 @@ function interceptLinks(doc) {
                 editor.setOption('mode', activeFile.endsWith('.md') ? 'markdown' : 'htmlmixed');
             });
         });
-document.querySelector('.add-file').addEventListener('click', () => {
-    const fileName = prompt('Enter new file name (e.g., post1.html):');
-    if (fileName && !files[fileName]) {
-        files[fileName] = ''; // Initialize the new file in the files object
-        const newFileItem = document.createElement('div');
-        newFileItem.classList.add('file-item');
-        newFileItem.dataset.file = fileName;
-        newFileItem.textContent = fileName;
-        newFileItem.addEventListener('click', (e) => {
-            document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
-            newFileItem.classList.add('active');
-            activeFile = newFileItem.dataset.file;
-            editor.setValue(files[activeFile]);
-            editor.setOption('mode', activeFile.endsWith('.md') ? 'markdown' : 'htmlmixed');
+        document.querySelector('.add-file').addEventListener('click', () => {
+            const fileName = prompt('Enter new file name:');
+            if (fileName && !files[fileName]) {
+                files[fileName] = '';
+                const newFileItem = document.createElement('div');
+                newFileItem.classList.add('file-item');
+                newFileItem.dataset.file = fileName;
+                newFileItem.textContent = fileName;
+                newFileItem.addEventListener('click', (e) => {
+                    document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
+                    newFileItem.classList.add('active');
+                    activeFile = newFileItem.dataset.file;
+                    editor.setValue(files[activeFile]);
+                    editor.setOption('mode', activeFile.endsWith('.md') ? 'markdown' : 'htmlmixed');
+                });
+                document.querySelector('#file-tree').insertBefore(newFileItem, document.querySelector('.add-file'));
+            }
         });
-        document.querySelector('#file-tree').insertBefore(newFileItem, document.querySelector('.add-file'));
-    }
-});
-
     </script>
 </body>
 </html>
