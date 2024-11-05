@@ -180,11 +180,12 @@
         
 document.querySelector('.add-file').addEventListener('click', () => {
     const fileName = prompt('Enter new file name (e.g., /folder/post1.html):');
-    if (fileName && !files[fileName]) {
+    // Check if the file name contains a hash symbol
+    if (fileName && !files[fileName] && !fileName.includes('#')) {
         // Initialize the new file in the files object with a message and a link to index
         files[fileName] = `<article class="post">
             <h2>New Page Added</h2>
-            <p>Add content or press <a href="/">to return to index</a>.</p>
+            <p>Add content or press <a href="/index.html">to return to index</a>.</p>
         </article>`;
         
         // Create the file item in the file tree
@@ -200,8 +201,11 @@ document.querySelector('.add-file').addEventListener('click', () => {
             editor.setOption('mode', activeFile.endsWith('.md') ? 'markdown' : 'htmlmixed');
         });
         document.querySelector('#file-tree').insertBefore(newFileItem, document.querySelector('.add-file'));
+    } else if (fileName.includes('#')) {
+        alert("File names cannot contain the '#' character.");
     }
 });
+
 
 function updateFileTree() {
     const fileTree = document.querySelector('#file-tree');
