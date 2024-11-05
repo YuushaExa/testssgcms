@@ -1,92 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <title>Code Sandbox</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Three Tabs Example</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/4.0.3/codemirror.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/4.0.3/theme/monokai.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-        }
-        .tabs {
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        #container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+        }
+        #file-tree {
+            width: 25%;
+            max-width: 200px;
+            background-color: #fff;
+            border-right: 1px solid #ccc;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #editor {
+            flex-grow: 1;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .CodeMirror {
+            height: 300px;
             margin-bottom: 20px;
-        }
-        .tab {
-            padding: 10px 20px;
+            font-family: monospace;
             border: 1px solid #ccc;
-            background-color: #f1f1f1;
-            margin-right: 5px;
-            transition: background-color 0.3s;
+            background-color: #fff;
         }
-        .tab:hover {
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+        .file-item {
+            cursor: pointer;
+            padding: 5px;
+            margin: 2px 0;
+            border-radius: 3px;
+        }
+        .file-item:hover {
+            background-color: #eee;
+        }
+        .file-item.active {
             background-color: #ddd;
         }
-        .content {
-           background-color: #fff;
-    margin-top: 10px;
-    display: flex;
-}
+        .add-file {
+            margin-top: 10px;
+            padding: 5px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border-radius: 3px;
         }
-        div#tab1Content {
-    width: 15%;
-        }
-        div#tab2Content {
-    width: 35%;
-        }
-        div#tab3Content {
-    width: 35%;
-        }
-          .tabscont {
-    border: 1px solid #ccc;
-    padding: 20px;
-    background-color: #fff;
-    margin-top: 10px;
-}  
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/4.0.3/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/4.0.3/mode/javascript/javascript.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/4.0.3/mode/xml/xml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/4.0.3/mode/css/css.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/4.0.3/mode/htmlmixed/htmlmixed.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/4.0.3/mode/markdown/markdown.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/4.0.3/addon/edit/closebrackets.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/4.0.3/addon/edit/closetag.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
 </head>
 <body>
-
-    <div class="tabs">
-        <div class="tab">Tab 1</div>
-        <div class="tab">Tab 2</div>
-        <div class="tab">Tab 3</div>
+    <h1>Code Sandbox</h1>
+    <div id="container">
+        <div id="file-tree">
+            <div class="file-item" data-file="index.html">index.html</div>
+            <div class="file-item" data-file="style.css">style.css</div>
+            <div class="file-item" data-file="script.js">script.js</div>
+            <div class="add-file">Add New File</div>
+        </div>
+        <div id="editor"></div>
     </div>
-<div class="content">
-    <div class="tabscont" id="tab1Content">
-        <h2>Content for Tab 1</h2>
-        <p>This is the content for Tab 1.</p>
-    </div>
-    <div class="tabscont" id="tab2Content">
-        <h2>Content for Tab 2</h2>
-        <p>This is the content for Tab 2.</p>
-    </div>
-    <div class="tabscont" id="tab3Content">
-        <h2>Content for Tab 3</h2>
-        <p>This is the content for Tab 3.</p>
-    </div>
-  </div>
-</body>
+    <iframe id="result"></iframe>
     <script>
-   function loadTab1Content() {
-            fetch('files.json') // Replace with the correct path to your JSON file
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const tab1Content = document.getElementById('tab1Content');
-                    tab1Content.innerHTML = '<h2>Content for Tab 1</h2>'; // Reset content
-                    data.files.forEach(file => {
-                        tab1Content.innerHTML += `<p><strong>${file.name}:</strong> ${file.description}</p>`;
-                    });
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-        }
+        let files = {
+            'index.html': '',
+            'style.css': '',
+            'script.js': ''
+        };
+        let activeFile = 'index.html';
+        const result = document.querySelector('#result');
+        let editor = CodeMirror(document.querySelector("#editor"), {
+            value: files[activeFile],
+            mode: "htmlmixed",
+            theme: "monokai",
+            lineNumbers: true,
+            autoCloseBrackets: true,
+            autoCloseTags: true
+        });
 
+        editor.on('change', () => {  
+            files[activeFile] = editor.getValue();
+            updateIframe(activeFile);
+        });
+        function updateIframe(url = 'index.html') {
+            let content = files[url];
+            let isMarkdown = url.endsWith('.md');
+            if (isMarkdown) {
+                content = marked.parse(content);
+            } else {
+                let tempDiv = document.createElement('div');
+                tempDiv.innerHTML = content;
+                tempDiv.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+                    let href = link.getAttribute('href');
+                    if (files[href]) {
+                        let style = document.createElement('style');
+                        style.textContent = files[href];
+                        link.replaceWith(style);
+                    }
+                });
+                tempDiv.querySelectorAll('script[src]').forEach(script => {
+                    let src = script.getAttribute('src');
+                    if (files[src]) {
+                        let inlineScript = document.createElement('script');
+                        inlineScript.textContent = files[src];
+                        script.replaceWith(inlineScript);
+                    }
+                });
+                content = tempDiv.innerHTML;
+            }
+            let iframeDoc = result.contentDocument || result.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(content);
+            iframeDoc.close();
+            interceptLinks(iframeDoc);
+        }
+        function interceptLinks(doc) {
+            doc.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const href = link.getAttribute('href');
+                    if (files[href]) {
+                        updateIframe(href);
+                    }
+                });
+            });
+        }
+        updateIframe();
+        document.querySelectorAll('.file-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                activeFile = item.dataset.file;
+                editor.setValue(files[activeFile]);
+                editor.setOption('mode', activeFile.endsWith('.md') ? 'markdown' : 'htmlmixed');
+            });
+        });
+        document.querySelector('.add-file').addEventListener('click', () => {
+            const fileName = prompt('Enter new file name:');
+            if (fileName && !files[fileName]) {
+                files[fileName] = '';
+                const newFileItem = document.createElement('div');
+                newFileItem.classList.add('file-item');
+                newFileItem.dataset.file = fileName;
+                newFileItem.textContent = fileName;
+                newFileItem.addEventListener('click', (e) => {
+                    document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
+                    newFileItem.classList.add('active');
+                    activeFile = newFileItem.dataset.file;
+                    editor.setValue(files[activeFile]);
+                    editor.setOption('mode', activeFile.endsWith('.md') ? 'markdown' : 'htmlmixed');
+                });
+                document.querySelector('#file-tree').insertBefore(newFileItem, document.querySelector('.add-file'));
+            }
+        });
     </script>
+</body>
 </html>
