@@ -144,20 +144,24 @@
             iframeDoc.close();
             interceptLinks(iframeDoc);
         }
-   function interceptLinks(doc) {
+  function interceptLinks(doc) {
     doc.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (event) => {
             event.preventDefault();
             let href = link.getAttribute('href');
-            // Remove leading slash for checking in the files object
-            if (href.startsWith('/')) {
-                href = href.substring(1);
-            }
+            // Check if the href is a valid file in the files object
             if (files[href]) {
                 updateIframe(href);
+            } else if (href.startsWith('/')) {
+                // Handle absolute paths by removing the leading slash
+                const relativePath = href.substring(1);
+                if (files[relativePath]) {
+                    updateIframe(relativePath);
+                } else {
+                    console.warn(`File ${relativePath} not found in the sandbox.`);
+                }
             } else {
                 console.warn(`File ${href} not found in the sandbox.`);
-                // Optionally, prompt to create the file or show an error
             }
         });
     });
@@ -175,14 +179,15 @@
         });
         
 document.querySelector('.add-file').addEventListener('click', () => {
-    const fileName = prompt('Enter new file name (e.g., about.html):');
+    const fileName = prompt('Enter new file name (e.g., /folder/post1.html):');
     if (fileName && !files[fileName]) {
         // Initialize the new file in the files object with a message and a link to index
         files[fileName] = `<article class="post">
             <h2>New Page Added</h2>
-            <p>Add content or press <a href="/index.html">to return to index</a>.</p>
+            <p>Add content or press <a href="/">to return to index</a>.</p>
         </article>`;
         
+        // Create the file item in the file tree
         const newFileItem = document.createElement('div');
         newFileItem.classList.add('file-item');
         newFileItem.dataset.file = fileName;
@@ -197,6 +202,25 @@ document.querySelector('.add-file').addEventListener('click', () => {
         document.querySelector('#file-tree').insertBefore(newFileItem, document.querySelector('.add-file'));
     }
 });
+
+function updateFileTree() {
+    const fileTree = document.querySelector('#file-tree');
+    fileTree.innerHTML = ''; // Clear existing file tree
+    Object.keys(files).forEach(file => {
+        const fileItem = document.createElement('div');
+        fileItem.classList.add('file-item');
+        fileItem.dataset.file = file;
+        fileItem.textContent = file;
+        fileItem.addEventListener('click', (e) => {
+            document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
+            fileItem.classList.add('active');
+            activeFile = fileItem.dataset.file;
+            editor.setValue(files[activeFile]);
+            editor.setOption('mode', activeFile.endsWith('.md') ? 'markdown' : 'htmlmixed');
+        });
+        fileTree.appendChild(fileItem);
+    });
+}
 
     </script>
 </body>
