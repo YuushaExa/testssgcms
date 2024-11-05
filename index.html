@@ -180,8 +180,8 @@
         
 document.querySelector('.add-file').addEventListener('click', () => {
     const fileName = prompt('Enter new file name (e.g., /folder/post1.html):');
-    // Check if the file name contains a hash symbol
-    if (fileName && !files[fileName] && !fileName.includes('#')) {
+    // Check if the file name is valid and does not already exist
+    if (fileName && !files[fileName]) {
         // Initialize the new file in the files object with a message and a link to index
         files[fileName] = `<article class="post">
             <h2>New Page Added</h2>
@@ -201,30 +201,10 @@ document.querySelector('.add-file').addEventListener('click', () => {
             editor.setOption('mode', activeFile.endsWith('.md') ? 'markdown' : 'htmlmixed');
         });
         document.querySelector('#file-tree').insertBefore(newFileItem, document.querySelector('.add-file'));
-    } else if (fileName.includes('#')) {
-        alert("File names cannot contain the '#' character.");
     }
 });
 
 
-function updateFileTree() {
-    const fileTree = document.querySelector('#file-tree');
-    fileTree.innerHTML = ''; // Clear existing file tree
-    Object.keys(files).forEach(file => {
-        const fileItem = document.createElement('div');
-        fileItem.classList.add('file-item');
-        fileItem.dataset.file = file;
-        fileItem.textContent = file;
-        fileItem.addEventListener('click', (e) => {
-            document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
-            fileItem.classList.add('active');
-            activeFile = fileItem.dataset.file;
-            editor.setValue(files[activeFile]);
-            editor.setOption('mode', activeFile.endsWith('.md') ? 'markdown' : 'htmlmixed');
-        });
-        fileTree.appendChild(fileItem);
-    });
-}
 
     </script>
 </body>
