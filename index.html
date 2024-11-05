@@ -148,16 +148,21 @@ function interceptLinks(doc) {
     doc.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (event) => {
             event.preventDefault();
-            const href = link.getAttribute('href');
+            let href = link.getAttribute('href');
+            // Remove leading slash for checking in the files object
+            if (href.startsWith('/')) {
+                href = href.substring(1);
+            }
             if (files[href]) {
                 updateIframe(href);
             } else {
-                // Optionally, you can handle external links or show an error
                 console.warn(`File ${href} not found in the sandbox.`);
+                // Optionally, prompt to create the file or show an error
             }
         });
     });
 }
+
 
         updateIframe();
         document.querySelectorAll('.file-item').forEach(item => {
