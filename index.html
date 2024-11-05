@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three Tabs Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            margin-right: 5px;
+            transition: background-color 0.3s;
+        }
+        .tab:hover {
+            background-color: #ddd;
+        }
+        .content {
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: #fff;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tabs">
+        <div class="tab">Tab 1</div>
+        <div class="tab">Tab 2</div>
+        <div class="tab">Tab 3</div>
+    </div>
+
+    <div class="content" id="tab1Content">
+        <h2>Content for Tab 1</h2>
+        <p>This is the content for Tab 1.</p>
+    </div>
+    <div class="content" id="tab2Content">
+        <h2>Content for Tab 2</h2>
+        <p>This is the content for Tab 2.</p>
+    </div>
+    <div class="content" id="tab3Content">
+        <h2>Content for Tab 3</h2>
+        <p>This is the content for Tab 3.</p>
+    </div>
+
+</body>
+</html>
