@@ -23,11 +23,16 @@
             background-color: #ddd;
         }
         .content {
-            border: 1px solid #ccc;
-            padding: 20px;
-            background-color: #fff;
-            margin-top: 10px;
-            display: inline-block;
+           background-color: #fff;
+    margin-top: 10px;
+    display: flex;
+}
+        }
+        .tabscont {
+    border: 1px solid #ccc;
+    padding: 20px;
+    background-color: #fff;
+    margin-top: 10px;
         }
         div#tab1Content {
     width: 15%;
@@ -49,15 +54,15 @@
         <div class="tab">Tab 3</div>
     </div>
 <div class="content">
-    <div id="tab1Content">
+    <div class="tabscont" id="tab1Content">
         <h2>Content for Tab 1</h2>
         <p>This is the content for Tab 1.</p>
     </div>
-    <div id="tab2Content">
+    <div  class="tabscont" id="tab2Content">
         <h2>Content for Tab 2</h2>
         <p>This is the content for Tab 2.</p>
     </div>
-    <div id="tab3Content">
+    <div  class="tabscont" id="tab3Content">
         <h2>Content for Tab 3</h2>
         <p>This is the content for Tab 3.</p>
     </div>
